@@ -1195,7 +1195,18 @@
             useEffect(() => { localStorage.setItem('pinnedGold', JSON.stringify(pinnedGold)); }, [pinnedGold]);
             useEffect(() => { localStorage.setItem('globalOrder', JSON.stringify(globalOrder)); }, [globalOrder]);
 
-            useEffect(() => { loadData(); }, []);
+            useEffect(() => {
+                loadData();
+                const handleVisibilityChange = () => {
+                    if (document.visibilityState === 'visible') {
+                        loadData();
+                    }
+                };
+                document.addEventListener("visibilitychange", handleVisibilityChange);
+                return () => {
+                    document.removeEventListener("visibilitychange", handleVisibilityChange);
+                };
+            }, []);
             useEffect(() => { if (goldData.length > 0 && !selectedGoldId) setSelectedGoldId(goldData[0].id || goldData[0].description); }, [goldData]);
 
             useEffect(() => {
