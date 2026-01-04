@@ -1011,7 +1011,7 @@
                     onDragEnter={onDragEnter}
                     onDragEnd={onDragEnd}
                     onDragOver={(e) => e.preventDefault()}
-                    className={`group relative overflow-hidden glass-card rounded-2xl p-4 mb-3 shadow-sm transition-all duration-300 hover:-translate-y-1 cursor-pointer ${glowClass}`}
+                    className={`group relative overflow-hidden glass-card rounded-2xl p-4 mb-3 md:mb-0 shadow-sm transition-all duration-300 hover:-translate-y-1 cursor-pointer ${glowClass}`}
                 >
                     <div className={`absolute inset-0 bg-gradient-to-br ${trendGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 dark:opacity-0`}></div>
 
@@ -1184,7 +1184,7 @@
             const trendGradient = isUp ? 'from-emerald-50/50 to-transparent' : isDown ? 'from-rose-50/50 to-transparent' : '';
 
             return (
-                <div onClick={onClick} className={`group relative overflow-hidden glass-card rounded-2xl p-4 mb-3 shadow-sm transition-all duration-300 hover:-translate-y-1 cursor-pointer ${activeGlowClass}`}>
+                <div onClick={onClick} className={`group relative overflow-hidden glass-card rounded-2xl p-4 mb-3 md:mb-0 shadow-sm transition-all duration-300 hover:-translate-y-1 cursor-pointer ${activeGlowClass}`}>
                     {/* Trend Background Gradient */}
                     <div className={`absolute inset-0 bg-gradient-to-br ${trendGradient} opacity-0 ${isUp || isDown ? 'opacity-100' : 'group-hover:opacity-50'} transition-opacity duration-500 pointer-events-none dark:opacity-0`}></div>
 
@@ -1353,7 +1353,7 @@
                     : 'shadow-lg';
 
             return (
-                <div className="mb-6 relative perspective-1000">
+                <div className="mb-6 relative perspective-1000 md:max-w-2xl md:mx-auto">
                     <div className={`relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br ${bgGradient} border ${borderColor} backdrop-blur-md transition-all duration-500 ${shadowClass} group`}>
 
                         {/* Dynamic Background Mesh Effect */}
@@ -1388,19 +1388,19 @@
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-[1.5fr_1fr] gap-6 items-end">
+                            <div className="grid grid-cols-[1.5fr_1fr] md:flex md:items-end md:justify-between gap-6 items-end relative z-10">
                                 {/* Buy Price - Prominent & Glowing */}
                                 <div className="flex flex-col">
-                                    <span className={`text-xs font-bold mb-1 opacity-90 tracking-wide ${textColor}`}>سعر الشراء</span>
-                                    <div className={`text-[2.75rem] font-black num-en tracking-tighter leading-none ${textColor} drop-shadow-lg`}>
+                                    <span className={`text-xs md:text-sm font-bold mb-0.5 opacity-90 tracking-wide ${textColor}`}>سعر الشراء</span>
+                                    <div className={`text-[2.75rem] md:text-6xl font-black num-en tracking-tighter leading-[0.9] md:leading-none ${textColor} drop-shadow-lg transition-all duration-300`}>
                                         {parseFloat(currency.buy_price).toLocaleString('en-US')}
                                     </div>
                                 </div>
 
                                 {/* Sell Price - Compact */}
-                                <div className="flex flex-col items-end pb-1.5">
-                                    <span className="text-[10px] font-bold text-gray-400 mb-1 opacity-80">سعر المبيع</span>
-                                    <div className="text-2xl font-bold num-en text-gray-600 dark:text-gray-300 tracking-tight">
+                                <div className="flex flex-col items-end pb-1.5 md:pb-1">
+                                    <span className="text-[10px] md:text-xs font-bold text-gray-400 mb-0.5 opacity-80">سعر المبيع</span>
+                                    <div className="text-2xl md:text-4xl font-bold num-en text-gray-600 dark:text-gray-300 tracking-tight transition-all duration-300">
                                         {parseFloat(currency.sell_price).toLocaleString('en-US')}
                                     </div>
                                 </div>
@@ -1815,10 +1815,12 @@
                                 <>
                                     <FeaturedRateCard pinned={pinned} currencyData={currencyData} />
                                     <div className="flex justify-between items-center mb-2 px-1"><span className="font-bold text-gray-700 dark:text-gray-200">العملات المفضلة</span><span className="text-xs text-brand-primary bg-brand-primary/10 px-2 py-1 rounded-full flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse"></span>مباشر</span></div>
-                                    {visibleCurrencies.length > 0 ? visibleCurrencies.map((c, i) => {
-                                        const { flag } = getFlagAndCode(c.name);
-                                        return <RateCard key={c.code} title={c.name} buy={c.buy_price} sell={c.sell_price} icon={flag} code={c.code} stats={c.stats} onClick={() => setSelectedCurrency(c)} draggable={true} onDragStart={() => (dragItem.current = i)} onDragEnter={() => (dragOverItem.current = i)} onDragEnd={handleSort} />;
-                                    }) : <div className="text-center py-8 text-gray-400 text-sm">لا توجد عملات مثبتة.</div>}
+                                    <div className="md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4">
+                                        {visibleCurrencies.length > 0 ? visibleCurrencies.map((c, i) => {
+                                            const { flag } = getFlagAndCode(c.name);
+                                            return <RateCard key={c.code} title={c.name} buy={c.buy_price} sell={c.sell_price} icon={flag} code={c.code} stats={c.stats} onClick={() => setSelectedCurrency(c)} draggable={true} onDragStart={() => (dragItem.current = i)} onDragEnter={() => (dragOverItem.current = i)} onDragEnd={handleSort} />;
+                                        }) : <div className="col-span-full text-center py-8 text-gray-400 text-sm">لا توجد عملات مثبتة.</div>}
+                                    </div>
 
                                     {showEnergy && (
                                         <>
@@ -1830,7 +1832,7 @@
                                                 const benzenePrice = rate * 0.85;
                                                 const dieselPrice = rate * 0.75;
                                                 return (
-                                                    <>
+                                                    <div className="md:grid md:grid-cols-2 gap-4">
                                                         <EnergyCard
                                                             title="البنزين (أوكتان 95)"
                                                             priceUSD="0.85"
@@ -1863,7 +1865,7 @@
                                                                 stats: usdRate.stats
                                                             })}
                                                         />
-                                                    </>
+                                                    </div>
                                                 );
                                             })()}
                                         </>
@@ -1872,23 +1874,25 @@
                                     {showGold && (
                                         <>
                                             <div className="flex justify-between items-center mb-2 px-1 mt-6"><span className="font-bold text-gray-700 dark:text-gray-200">أسعار الذهب (مختصر)</span></div>
-                                            {visibleGold.length > 0 ? visibleGold.map((g, i) => (
-                                                <RateCard
-                                                    key={`g-${i}`}
-                                                    title={g.description}
-                                                    buy={g.buy_price}
-                                                    sell={g.sell_price}
-                                                    icon={g.description.includes('أونصة') ? "⚖️" : "🏆"}
-                                                    code={g.description.includes('أونصة') ? "OZ" : "GOLD"}
-                                                    stats={g.stats}
-                                                    isUsd={g.description.includes('أونصة') || g.description.includes('Ounce')}
-                                                    onClick={() => setSelectedGoldCard(g)}
-                                                    draggable={true}
-                                                    onDragStart={() => (dragItem.current = i)}
-                                                    onDragEnter={() => (dragOverItem.current = i)}
-                                                    onDragEnd={handlePinnedGoldSort}
-                                                />
-                                            )) : <div className="text-center py-4 text-xs text-gray-400">لم يتم تثبيت أي عيارات ذهب للعرض.</div>}
+                                            <div className="md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4">
+                                                {visibleGold.length > 0 ? visibleGold.map((g, i) => (
+                                                    <RateCard
+                                                        key={`g-${i}`}
+                                                        title={g.description}
+                                                        buy={g.buy_price}
+                                                        sell={g.sell_price}
+                                                        icon={g.description.includes('أونصة') ? "⚖️" : "🏆"}
+                                                        code={g.description.includes('أونصة') ? "OZ" : "GOLD"}
+                                                        stats={g.stats}
+                                                        isUsd={g.description.includes('أونصة') || g.description.includes('Ounce')}
+                                                        onClick={() => setSelectedGoldCard(g)}
+                                                        draggable={true}
+                                                        onDragStart={() => (dragItem.current = i)}
+                                                        onDragEnter={() => (dragOverItem.current = i)}
+                                                        onDragEnd={handlePinnedGoldSort}
+                                                    />
+                                                )) : <div className="col-span-full text-center py-4 text-xs text-gray-400">لم يتم تثبيت أي عيارات ذهب للعرض.</div>}
+                                            </div>
                                         </>
                                     )}
                                 </>
@@ -1917,7 +1921,7 @@
                         <div className="px-4 pt-12">
                             {loading ? <div className="text-center py-10">جاري التحميل...</div> : (
                                 <>
-                                    <div className="mb-8 space-y-3">
+                                    <div className="mb-8 space-y-3 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6">
                                         {finalDisplayGold.map((g, i) => {
                                             const isOunce = g.description.includes('أونصة') || g.description.includes('Ounce');
                                             const karatMatch = g.description.match(/(\d+)/);
@@ -2053,20 +2057,22 @@
                             </div>
                             {globalLoading && !globalRawData ? <div className="text-center py-10 text-gray-400">جاري جلب الأسعار...</div> : (
                                 <>
-                                    {displayList.map((curr, i) => (
-                                        <RateCard
-                                            key={curr.code}
-                                            title={curr.name}
-                                            buy={curr.buy}
-                                            sell={curr.sell}
-                                            icon={curr.flag}
-                                            code={curr.code}
-                                            draggable={true}
-                                            onDragStart={() => (dragItem.current = i)}
-                                            onDragEnter={() => (dragOverItem.current = i)}
-                                            onDragEnd={handleGlobalSort}
-                                        />
-                                    ))}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
+                                        {displayList.map((curr, i) => (
+                                            <RateCard
+                                                key={curr.code}
+                                                title={curr.name}
+                                                buy={curr.buy}
+                                                sell={curr.sell}
+                                                icon={curr.flag}
+                                                code={curr.code}
+                                                draggable={true}
+                                                onDragStart={() => (dragItem.current = i)}
+                                                onDragEnter={() => (dragOverItem.current = i)}
+                                                onDragEnd={handleGlobalSort}
+                                            />
+                                        ))}
+                                    </div>
                                     <p className="text-center text-xs text-gray-400 mt-4">الأسعار عالمية ويتم تحديثها كل 45 دقيقة.</p>
                                 </>
                             )}
@@ -2690,7 +2696,7 @@
 
 
             return (
-                <div className="min-h-screen bg-transparent max-w-md mx-auto relative shadow-2xl overflow-hidden">
+                <div className="min-h-screen bg-transparent w-full md:max-w-7xl mx-auto relative md:shadow-none overflow-hidden md:overflow-visible transition-all duration-300">
                     <div className="mesh-bg"><div className="mesh-blob mesh-blob-1"></div><div className="mesh-blob mesh-blob-2"></div><div className="mesh-blob mesh-blob-3"></div><div className="mesh-blob mesh-blob-4"></div></div>
                     <InstallPrompt />
                     {showSplash && <SplashScreen />}
