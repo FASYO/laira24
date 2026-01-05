@@ -1481,66 +1481,69 @@
         );
 
         const Header = ({ title, subtitle, time, showDate = true, showBack = false, onBack, setActiveTab, loadData }) => (
-            <div className="relative z-10 mb-[-1.5rem] overflow-hidden rounded-b-[2.5rem] bg-[#163300]/80 backdrop-blur-xl shadow-xl transition-all duration-300">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#1a3c00] via-[#112700] to-[#0a1a00]"></div>
-                <div className="absolute -top-32 -right-32 w-64 h-64 bg-[#2ed06e] opacity-5 rounded-full blur-3xl animate-pulse"></div>
-                <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-[#9fe870] opacity-5 rounded-full blur-3xl animate-pulse"></div>
+            <div className="relative z-[60] px-4 pt-4 mb-2">
+                <div className="relative overflow-hidden rounded-[2rem] bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/60 dark:border-white/5 shadow-sm transition-all duration-500">
+                    {/* Subtle Gradient Accent */}
+                    <div className="absolute top-0 right-0 w-48 h-48 bg-brand-primary/5 rounded-full blur-[60px] -translate-y-24 translate-x-24"></div>
 
-                <div className="relative p-5 pb-10 pt-6">
-                    <div className="flex justify-between items-center mb-6">
-                        {showBack ? (
-                            <button
-                                onClick={onBack}
-                                className="flex items-center gap-2 text-white/90 hover:text-white transition-colors group"
-                            >
-                                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-all">
-                                    <IconRenderer icon={Icons.ArrowLeft} />
-                                </div>
-                                <span className="font-bold text-sm">رجوع</span>
-                            </button>
-                        ) : (
-                            <div className="flex items-center gap-3">
-                                <div className="relative w-9 h-9 flex items-center justify-center">
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-[#2ed06e] to-[#9fe870] rounded-lg rotate-6 opacity-80"></div>
-                                    <div className="absolute inset-0 bg-[#163300] rounded-lg border border-[#2ed06e]/30 flex items-center justify-center text-[#2ed06e] font-black text-xs z-10 shadow-lg">24</div>
-                                </div>
-                                <div className="flex flex-col">
-                                    <h1 className="text-base font-bold text-white leading-none tracking-wide">الليرة 24</h1>
-                                    <span className="text-[9px] text-[#9fe870] font-light tracking-widest opacity-80">SYRIAN POUND</span>
-                                </div>
-                            </div>
-                        )}
-
-                        {!showBack && (
-                            <div className="flex items-center gap-2">
+                    <div className="relative p-5">
+                        <div className="flex justify-between items-center mb-6">
+                            {showBack ? (
                                 <button
-                                    onClick={() => setActiveTab('settings')}
-                                    className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all active:scale-95"
+                                    onClick={onBack}
+                                    className="flex items-center gap-2 text-gray-800 dark:text-gray-200 hover:text-brand-primary transition-colors group"
                                 >
-                                    <IconRenderer icon={Icons.Settings} />
-                                </button>
-                                <button
-                                    onClick={loadData}
-                                    className="group w-9 h-9 rounded-full bg-gradient-to-br from-[#2ed06e] to-[#25a556] shadow-lg shadow-[#2ed06e]/20 flex items-center justify-center text-[#0f2400] transition-all active:scale-95 hover:shadow-[#2ed06e]/40"
-                                >
-                                    <div className="group-active:rotate-180 transition-transform duration-500">
-                                        <IconRenderer icon={Icons.Refresh} />
+                                    <div className="w-10 h-10 rounded-2xl bg-white/80 dark:bg-white/5 flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/5 group-hover:bg-brand-primary group-hover:text-white group-hover:border-brand-primary transition-all">
+                                        <IconRenderer icon={Icons.ArrowLeft} />
                                     </div>
+                                    <span className="font-extrabold text-sm">رجوع</span>
                                 </button>
-                            </div>
-                        )}
-                    </div>
-
-                    <div>
-                        <h2 className="text-2xl font-black text-white mb-1.5 leading-tight tracking-tight">{title}</h2>
-                        <div className="flex flex-wrap items-center gap-3">
-                            {showDate && (
-                                <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full backdrop-blur-sm">
-                                    <span className="w-1.5 h-1.5 bg-[#2ed06e] rounded-full animate-pulse"></span>
-                                    <span className="text-[10px] text-[#9fe870] font-mono num-en">{formatDateForExport(time)} - {formatLastUpdate(time)}</span>
+                            ) : (
+                                <div className="flex items-center gap-3">
+                                    <div className="relative w-11 h-11 flex items-center justify-center">
+                                        <div className="absolute inset-0 bg-brand-primary/20 rounded-2xl rotate-6"></div>
+                                        <div className="relative w-full h-full bg-white dark:bg-gray-800 rounded-2xl border border-brand-primary/20 flex items-center justify-center text-brand-primary font-black text-base shadow-sm">
+                                            24
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <h1 className="text-lg font-black text-gray-900 dark:text-white leading-none tracking-tight">الليرة 24</h1>
+                                        <span className="text-[10px] text-brand-primary font-bold tracking-[0.2em] opacity-80 uppercase mt-0.5">Lira 24</span>
+                                    </div>
                                 </div>
                             )}
-                            <span className="text-xs text-gray-400 font-light border-l border-white/10 pl-3">{subtitle}</span>
+
+                            <div className="flex items-center gap-2">
+                                {!showBack && (
+                                    <button
+                                        onClick={() => setActiveTab('settings')}
+                                        className="w-10 h-10 rounded-2xl bg-white/80 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-center justify-center text-gray-500 dark:text-white/40 hover:text-brand-primary dark:hover:text-white transition-all active:scale-90"
+                                    >
+                                        <IconRenderer icon={Icons.Settings} />
+                                    </button>
+                                )}
+                                <button
+                                    onClick={loadData}
+                                    className="w-10 h-10 rounded-2xl bg-brand-primary text-brand-dark shadow-lg shadow-brand-primary/20 flex items-center justify-center hover:scale-105 active:scale-95 active:rotate-180 transition-all font-bold"
+                                >
+                                    <IconRenderer icon={Icons.Refresh} />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-1">
+                            <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">{title}</h2>
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{subtitle}</p>
+                                {showDate && (
+                                    <div className="flex items-center gap-2 bg-brand-primary/10 dark:bg-brand-primary/20 px-3 py-1 rounded-full border border-brand-primary/10">
+                                        <span className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></span>
+                                        <span className="text-[10px] text-brand-primary font-bold num-en tracking-wide">
+                                            {formatLastUpdate(time)}
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1866,7 +1869,7 @@
                 return (
                     <div className="pb-24 animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
                         <Header title="أسعار الصرف" subtitle="مباشر مقابل الليرة السورية" time={dbLastUpdate} setActiveTab={setActiveTab} loadData={loadData} />
-                        <div className="px-4 pt-12">
+                        <div className="px-4 pt-4">
                             {loading ? <div className="text-center py-10 text-gray-400">جاري التحميل...</div> : (
                                 <>
                                     <FeaturedRateCard pinned={pinned} currencyData={currencyData} />
@@ -1980,7 +1983,7 @@
                 return (
                     <div className="pb-24 animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
                         <Header title="أسعار الذهب" subtitle="تحديث لحظي من الصاغة" time={dbLastUpdate} setActiveTab={setActiveTab} loadData={loadData} />
-                        <div className="px-4 pt-12">
+                        <div className="px-4 pt-4">
                             {loading ? <div className="text-center py-10">جاري التحميل...</div> : (
                                 <>
                                     <div className="mb-8 space-y-3 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6">
@@ -2096,7 +2099,7 @@
                 return (
                     <div className="pb-24 animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
                         <Header title="الأسعار العالمية" subtitle="تحويل وحاسبة فورية" time={apiLastUpdate} setActiveTab={setActiveTab} loadData={loadData} />
-                        <div className="px-4 pt-12">
+                        <div className="px-4 pt-4">
                             <div className="glass-card rounded-2xl shadow-lg p-5 mb-8 relative overflow-hidden">
                                 <div className="absolute top-0 left-0 w-full h-1 bg-brand-primary"></div>
                                 <h3 className="text-sm font-bold text-gray-500 mb-4 flex items-center gap-2"><IconRenderer icon={Icons.Calculator} />حاسبة العملات العالمية</h3>
@@ -2165,7 +2168,7 @@
                 return (
                     <div className="pb-24 animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
                         <Header title="الحاسبة والتحليل" subtitle="حساب دقيق لكافة العملات" time={dbLastUpdate} setActiveTab={setActiveTab} loadData={loadData} />
-                        <div className="px-4 pt-12">
+                        <div className="px-4 pt-4">
                             <div className="glass-card rounded-2xl shadow-sm p-6 mb-4">
 
                                 <div className="flex flex-col gap-4 mb-6">
@@ -2232,7 +2235,7 @@
             const renderSettings = () => (
                 <div className="pb-24 animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
                     <Header title="الإعدادات" subtitle="تخصيص التطبيق" time={null} showDate={false} showBack={true} onBack={() => setActiveTab('home')} setActiveTab={setActiveTab} loadData={loadData} />
-                    <div className="px-4 pt-12 space-y-4">
+                    <div className="px-4 pt-4 space-y-4">
 
                         <div className="glass-card rounded-2xl p-4 shadow-sm">
                             <div className="flex items-center gap-3 mb-4">
