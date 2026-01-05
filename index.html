@@ -1066,9 +1066,9 @@
         };
 
         // --- Energy Modal ---
-        const EnergyDetailModal = ({ energy, onClose, time }) => {
+        const EnergyDetailModal = ({ energy, onClose, onMove, time }) => {
             if (!energy) return null;
-            // energy object: { title, priceUSD, priceSYP, icon, iconColor, stats, code }
+            // energy object: { title, priceUSD, priceSYP, icon, iconColor, stats, code, id }
             const sell = parseFloat(energy.priceUSD);
             const buy = parseFloat(energy.priceSYP);
             const isUp = energy.stats?.direction === 'up';
@@ -1158,14 +1158,18 @@
                                 </div>
                             </div>
 
-                            <div className="screenshot-exclude">
+                            <div className="flex gap-3 screenshot-exclude">
                                 <button
                                     onClick={() => handleScreenshot(exportId, code)}
-                                    className="w-full bg-gradient-to-r from-brand-dark to-[#0f2400] text-white rounded-2xl p-4 flex items-center justify-center gap-2 font-bold text-sm transition-all shadow-lg shadow-brand-dark/20 hover:shadow-brand-primary/30 active:scale-95 group"
+                                    className="flex-1 bg-gradient-to-r from-brand-dark to-[#0f2400] text-white rounded-2xl p-4 flex items-center justify-center gap-2 font-bold text-sm transition-all shadow-lg shadow-brand-dark/20 hover:shadow-brand-primary/30 active:scale-95 group"
                                 >
                                     <IconRenderer icon={Icons.Download} />
                                     <span>حفظ البطاقة</span>
                                 </button>
+                                <div className="flex gap-1">
+                                    <button onClick={() => onMove(energy.id, -1)} className="w-14 h-full rounded-2xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 shadow-sm flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 transition active:scale-95"><IconRenderer icon={Icons.ArrowUp} /></button>
+                                    <button onClick={() => onMove(energy.id, 1)} className="w-14 h-full rounded-2xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 shadow-sm flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 transition active:scale-95"><IconRenderer icon={Icons.ArrowDown} /></button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1173,25 +1177,39 @@
             );
         };
 
+
         // --- Energy Card ---
-        const EnergyCard = ({ title, priceUSD, priceSYP, icon, iconColor, stats, onClick }) => {
+        const EnergyCard = ({ title, priceUSD, priceSYP, icon, iconColor, stats, onClick, draggable, onDragStart, onDragEnter, onDragEnd }) => {
             const isUp = stats?.direction === 'up';
             const isDown = stats?.direction === 'down';
 
             // Standard RateCard border logic for neutral state to ensure perfect match
-            const neutralBorder = 'border-gray-100 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500';
-            const activeGlowClass = isUp ? 'card-glow-up' : isDown ? 'card-glow-down' : neutralBorder;
+            const glowClass = isUp ? 'card-glow-up' : isDown ? 'card-glow-down' : 'border-gray-100 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500';
             const trendGradient = isUp ? 'from-emerald-50/50 to-transparent' : isDown ? 'from-rose-50/50 to-transparent' : '';
 
+            const trendIcon = isUp ? Icons.TrendUp : isDown ? Icons.TrendDown : Icons.Minus;
+            const trendTextColor = isUp ? 'text-emerald-600 dark:text-emerald-400' : isDown ? 'text-rose-600 dark:text-rose-400' : 'text-gray-400';
+            const trendBgColor = isUp ? 'bg-emerald-50 dark:bg-emerald-900/20' : isDown ? 'bg-rose-50 dark:bg-rose-900/20' : 'bg-gray-100 dark:bg-gray-700';
+
             return (
-                <div onClick={onClick} className={`group relative overflow-hidden glass-card rounded-2xl p-4 mb-3 md:mb-0 shadow-sm transition-all duration-300 hover:-translate-y-1 cursor-pointer ${activeGlowClass}`}>
+                <div
+                    onClick={onClick}
+                    draggable={draggable}
+                    onDragStart={onDragStart}
+                    onDragEnter={onDragEnter}
+                    onDragEnd={onDragEnd}
+                    onDragOver={(e) => e.preventDefault()}
+                    className={`group relative overflow-hidden glass-card rounded-2xl p-4 mb-3 md:mb-0 shadow-sm transition-all duration-300 hover:-translate-y-1 cursor-pointer ${glowClass}`}
+                >
                     {/* Trend Background Gradient */}
-                    <div className={`absolute inset-0 bg-gradient-to-br ${trendGradient} opacity-0 ${isUp || isDown ? 'opacity-100' : 'group-hover:opacity-50'} transition-opacity duration-500 pointer-events-none dark:opacity-0`}></div>
+                    <div className={`absolute inset-0 bg-gradient-to-br ${trendGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 dark:opacity-0`}></div>
 
                     <div className="relative flex justify-between items-start mb-4 z-10">
                         <div className="flex items-center gap-3">
+                            {draggable && <div className="text-gray-300 dark:text-gray-600 hidden sm:block cursor-grab active:cursor-grabbing hover:text-gray-500"><IconRenderer icon={Icons.Move} /></div>}
+
                             {/* Icon Container with dynamic color accent */}
-                            <div className={`w-12 h-12 rounded-xl bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-600 flex items-center justify-center text-2xl shadow-sm transition-transform duration-300 group-hover:scale-110 ${iconColor}`}>
+                            <div className={`w-12 h-12 rounded-xl bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-600 flex items-center justify-center text-2xl shadow-sm relative group-hover:scale-105 transition-transform duration-300 ${iconColor}`}>
                                 {icon}
                                 {stats && stats.direction !== 'neutral' && (
                                     <div className={`absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-white dark:border-gray-800 flex items-center justify-center text-[8px] font-bold ${isUp ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'}`}>
@@ -1204,6 +1222,14 @@
                                 <span className="text-xs text-gray-400 font-mono font-medium tracking-wide">Global Price</span>
                             </div>
                         </div>
+
+                        {/* النسبة المئوية - مطابقة لـ RateCard */}
+                        {stats && (
+                            <div className={`px-2.5 py-1 rounded-lg flex items-center gap-1.5 ${trendBgColor} border border-transparent group-hover:border-current transition-colors duration-300 ${trendTextColor}`}>
+                                <span className="text-[10px] font-bold num-en">{stats.percent}%</span>
+                                <div className="w-3 h-3"><IconRenderer icon={trendIcon} /></div>
+                            </div>
+                        )}
                     </div>
 
                     <div className="relative z-10 grid grid-cols-2 gap-3">
@@ -1599,6 +1625,15 @@
 
             const [pinnedGold, setPinnedGold] = useState(() => { try { return JSON.parse(localStorage.getItem('pinnedGold')) || []; } catch { return []; } });
 
+            const [energyOrder, setEnergyOrder] = useState(() => {
+                try {
+                    const stored = JSON.parse(localStorage.getItem('energyOrder'));
+                    return stored || ['benzene', 'diesel']; // Default order: Benzene first, then Diesel
+                } catch {
+                    return ['benzene', 'diesel'];
+                }
+            });
+
             const [globalOrder, setGlobalOrder] = useState(() => {
                 try {
                     const stored = JSON.parse(localStorage.getItem('globalOrder'));
@@ -1627,6 +1662,7 @@
             useEffect(() => { localStorage.setItem('showGoldOnHome', showGold); }, [showGold]);
             useEffect(() => { localStorage.setItem('showEnergyOnHome', showEnergy); }, [showEnergy]);
             useEffect(() => { localStorage.setItem('pinnedGold', JSON.stringify(pinnedGold)); }, [pinnedGold]);
+            useEffect(() => { localStorage.setItem('energyOrder', JSON.stringify(energyOrder)); }, [energyOrder]);
             useEffect(() => { localStorage.setItem('globalOrder', JSON.stringify(globalOrder)); }, [globalOrder]);
 
             useEffect(() => {
@@ -1787,6 +1823,25 @@
                 setPinnedGold(_pinned);
             };
 
+            const handleEnergySort = () => {
+                let _order = [...energyOrder];
+                const draggedItemContent = _order.splice(dragItem.current, 1)[0];
+                _order.splice(dragOverItem.current, 0, draggedItemContent);
+                dragItem.current = null;
+                dragOverItem.current = null;
+                setEnergyOrder(_order);
+            };
+
+            const handleMoveEnergy = (energyId, direction) => {
+                const idx = energyOrder.indexOf(energyId);
+                if (idx === -1) return;
+                const newIdx = idx + direction;
+                if (newIdx < 0 || newIdx >= energyOrder.length) return;
+                const newOrder = [...energyOrder];
+                [newOrder[idx], newOrder[newIdx]] = [newOrder[newIdx], newOrder[idx]];
+                setEnergyOrder(newOrder);
+            };
+
             const handleGlobalSort = () => {
                 const visibleItems = globalOrder.filter(k => k !== baseCurrency);
                 let _visibleList = [...visibleItems];
@@ -1822,54 +1877,60 @@
                                         }) : <div className="col-span-full text-center py-8 text-gray-400 text-sm">لا توجد عملات مثبتة.</div>}
                                     </div>
 
-                                    {showEnergy && (
-                                        <>
-                                            <div className="flex justify-between items-center mb-2 px-1 mt-6"><span className="font-bold text-gray-700 dark:text-gray-200">أسعار الطاقة</span></div>
-                                            {(() => {
-                                                const usdRate = currencyData.find(c => c.code === 'USD');
-                                                if (!usdRate) return null;
-                                                const rate = parseFloat(usdRate.sell_price || 0);
-                                                const benzenePrice = rate * 0.85;
-                                                const dieselPrice = rate * 0.75;
-                                                return (
-                                                    <div className="md:grid md:grid-cols-2 gap-4">
+                                    {showEnergy && (() => {
+                                        const usdRate = currencyData.find(c => c.code === 'USD');
+                                        if (!usdRate) return null;
+                                        const rate = parseFloat(usdRate.sell_price || 0);
+
+                                        // Define energy items
+                                        const energyItems = {
+                                            benzene: {
+                                                id: 'benzene',
+                                                title: "البنزين (أوكتان 95)",
+                                                priceUSD: "0.85",
+                                                priceSYP: rate * 0.85,
+                                                icon: <IconRenderer icon={Icons.Fuel} />,
+                                                iconColor: "text-orange-500 dark:text-orange-400",
+                                                stats: usdRate.stats
+                                            },
+                                            diesel: {
+                                                id: 'diesel',
+                                                title: "المازوت (الديزل)",
+                                                priceUSD: "0.75",
+                                                priceSYP: rate * 0.75,
+                                                icon: <IconRenderer icon={Icons.Droplet} />,
+                                                iconColor: "text-blue-500 dark:text-blue-400",
+                                                stats: usdRate.stats
+                                            }
+                                        };
+
+                                        // Order based on energyOrder state
+                                        const orderedEnergy = energyOrder.map(id => energyItems[id]).filter(Boolean);
+
+                                        return (
+                                            <>
+                                                <div className="flex justify-between items-center mb-2 px-1 mt-6"><span className="font-bold text-gray-700 dark:text-gray-200">أسعار الطاقة</span></div>
+                                                <div className="md:grid md:grid-cols-2 gap-4">
+                                                    {orderedEnergy.map((energy, i) => (
                                                         <EnergyCard
-                                                            title="البنزين (أوكتان 95)"
-                                                            priceUSD="0.85"
-                                                            priceSYP={benzenePrice}
-                                                            icon={<IconRenderer icon={Icons.Fuel} />}
-                                                            iconColor="text-orange-500 dark:text-orange-400"
-                                                            stats={usdRate.stats}
-                                                            onClick={() => setSelectedEnergy({
-                                                                title: "البنزين (أوكتان 95)",
-                                                                priceUSD: "0.85",
-                                                                priceSYP: benzenePrice,
-                                                                icon: <IconRenderer icon={Icons.Fuel} />,
-                                                                iconColor: "text-orange-500 dark:text-orange-400",
-                                                                stats: usdRate.stats
-                                                            })}
+                                                            key={energy.id}
+                                                            title={energy.title}
+                                                            priceUSD={energy.priceUSD}
+                                                            priceSYP={energy.priceSYP}
+                                                            icon={energy.icon}
+                                                            iconColor={energy.iconColor}
+                                                            stats={energy.stats}
+                                                            onClick={() => setSelectedEnergy(energy)}
+                                                            draggable={true}
+                                                            onDragStart={() => (dragItem.current = i)}
+                                                            onDragEnter={() => (dragOverItem.current = i)}
+                                                            onDragEnd={handleEnergySort}
                                                         />
-                                                        <EnergyCard
-                                                            title="المازوت (الديزل)"
-                                                            priceUSD="0.75"
-                                                            priceSYP={dieselPrice}
-                                                            icon={<IconRenderer icon={Icons.Droplet} />}
-                                                            iconColor="text-blue-500 dark:text-blue-400"
-                                                            stats={usdRate.stats}
-                                                            onClick={() => setSelectedEnergy({
-                                                                title: "المازوت (الديزل)",
-                                                                priceUSD: "0.75",
-                                                                priceSYP: dieselPrice,
-                                                                icon: <IconRenderer icon={Icons.Droplet} />,
-                                                                iconColor: "text-blue-500 dark:text-blue-400",
-                                                                stats: usdRate.stats
-                                                            })}
-                                                        />
-                                                    </div>
-                                                );
-                                            })()}
-                                        </>
-                                    )}
+                                                    ))}
+                                                </div>
+                                            </>
+                                        );
+                                    })()}
 
                                     {showGold && (
                                         <>
